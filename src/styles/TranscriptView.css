@@ -1,0 +1,61 @@
+.transcript-view {
+  background: #111827;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.transcript-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.transcript-header h3 {
+  font-size: 1rem;
+  color: #e2e8f0;
+}
+
+.transcript-count {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.transcript-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.transcript-segment {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: #1f2937;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.segment-number {
+  color: #94a3b8;
+  font-weight: 600;
+  min-width: 2rem;
+}
+
+.segment-text {
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+
+.empty-transcript {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #64748b;
+}
