@@ -1,0 +1,100 @@
+.weird-seed-panel {
+  padding: 1.5rem;
+  background: #0a0a0a;
+}
+
+.weird-seed-panel h3 {
+  font-size: 1rem;
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.seed-description {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+
+.seed-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.seed-input:focus {
+  outline: none;
+  border-color: #4ade80;
+}
+
+.seed-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-apply,
+.btn-clear {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-apply {
+  background: #4ade80;
+  color: #0a0a0a;
+}
+
+.btn-apply:hover {
+  background: #22c55e;
+}
+
+.btn-clear {
+  background: #374151;
+  color: #e2e8f0;
+}
+
+.btn-clear:hover {
+  background: #4b5563;
+}
+
+.seed-examples {
+  margin-top: 1rem;
+}
+
+.seed-examples h4 {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.example-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.example-btn:hover {
+  background: #374151;
+  border-color: #4ade80;
+}

@@ -1,0 +1,26 @@
+.rhyme-graph {
+  padding: 1.5rem;
+  background: #0a0a0a;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rhyme-graph h3 {
+  font-size: 1rem;
+  color: #e2e8f0;
+  margin-bottom: 1rem;
+}
+
+.rhyme-graph svg {
+  flex: 1;
+  border-radius: 6px;
+}
+
+.empty-graph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #64748b;
+}

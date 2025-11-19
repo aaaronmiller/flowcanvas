@@ -1,0 +1,155 @@
+.tile-canvas {
+  background: #111827;
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.canvas-header h2 {
+  font-size: 1.25rem;
+  color: #e2e8f0;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.safe {
+  background: #4ade80;
+}
+
+.dot.wacky {
+  background: #fbbf24;
+}
+
+.dot.wild {
+  background: #f87171;
+}
+
+.tiles-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tile-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #1f2937;
+  border-radius: 6px;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #374151;
+  border: 2px solid;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 100px;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tile.pinned {
+  background: #4b5563;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+}
+
+.tile-icon {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.tile-word {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.25rem;
+}
+
+.tile-score {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.pin-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.875rem;
+}
+
+.tile-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.tile-tooltip div {
+  margin-bottom: 0.25rem;
+}
+
+.tile-tooltip div:last-child {
+  margin-bottom: 0;
+}
+
+.callback-context {
+  max-width: 200px;
+  white-space: normal;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #64748b;
+  font-size: 1rem;
+}

@@ -1,0 +1,101 @@
+.threads-panel {
+  padding: 1.5rem;
+  background: #0a0a0a;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+}
+
+.threads-panel h3 {
+  font-size: 1rem;
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.threads-description {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+
+.threads-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.no-threads {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0.5rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.no-threads small {
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.thread-item {
+  padding: 1rem;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+}
+
+.thread-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.thread-theme {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.thread-sentiment {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.thread-entities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.entity-tag {
+  padding: 0.25rem 0.5rem;
+  background: #374151;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.entity-more {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.thread-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.thread-meta small {
+  font-size: 0.75rem;
+  color: #64748b;
+}
