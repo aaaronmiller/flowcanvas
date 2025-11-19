@@ -1,0 +1,67 @@
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #0a0a0a;
+  padding: 2rem;
+}
+
+.error-container {
+  max-width: 600px;
+  padding: 2rem;
+  background: #111827;
+  border: 2px solid #f87171;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.error-container h1 {
+  font-size: 1.5rem;
+  color: #f87171;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #e2e8f0;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.error-details {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.error-details summary {
+  cursor: pointer;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.error-details pre {
+  background: #0a0a0a;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.error-help {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}

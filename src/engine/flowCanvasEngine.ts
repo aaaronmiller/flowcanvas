@@ -3,6 +3,9 @@ import { SemanticEngine, SemanticMatch, StoryThread } from './semanticEngine';
 import { CallbackEngine, PerformancePhase, CallbackOpportunity } from './callbackEngine';
 import { AudioEngine } from './audioEngine';
 import { SpeechEngine, TranscriptSegment } from './speechEngine';
+import { AnalyticsEngine, SessionAnalytics } from './analyticsEngine';
+import { HighlightEngine, Highlight } from './highlightEngine';
+import { MIDIEngine, FootswitchEngine } from './midiEngine';
 import { cmudict } from './cmudict';
 
 export interface Suggestion {
@@ -44,6 +47,10 @@ export class FlowCanvasEngine {
   private callbackEngine: CallbackEngine;
   private audioEngine: AudioEngine;
   private speechEngine: SpeechEngine;
+  private analyticsEngine: AnalyticsEngine;
+  private highlightEngine: HighlightEngine;
+  private midiEngine: MIDIEngine;
+  private footswitchEngine: FootswitchEngine;
 
   private suggestions: Map<string, Suggestion> = new Map();
   private pinnedSuggestions: Set<string> = new Set();
@@ -69,6 +76,10 @@ export class FlowCanvasEngine {
     this.callbackEngine = new CallbackEngine();
     this.audioEngine = new AudioEngine();
     this.speechEngine = new SpeechEngine();
+    this.analyticsEngine = new AnalyticsEngine();
+    this.highlightEngine = new HighlightEngine();
+    this.midiEngine = new MIDIEngine();
+    this.footswitchEngine = new FootswitchEngine();
   }
 
   // Initialize the system
@@ -87,6 +98,17 @@ export class FlowCanvasEngine {
       return false;
     }
 
+    // Initialize MIDI (optional)
+    try {
+      await this.midiEngine.initialize();
+      this.setupMIDIActions();
+    } catch (error) {
+      console.log('MIDI not available:', error);
+    }
+
+    // Setup footswitch actions
+    this.setupFootswitchActions();
+
     // Start new session
     this.startNewSession();
 
@@ -94,6 +116,45 @@ export class FlowCanvasEngine {
     this.setupAutoSave();
 
     return true;
+  }
+
+  // Setup MIDI action handlers
+  private setupMIDIActions(): void {
+    this.midiEngine.setActionCallback((action, value) => {
+      switch (action) {
+        case 'pin':
+          const unpinned = Array.from(this.suggestions.values()).find(s => !s.isPinned);
+          if (unpinned) this.pinSuggestion(unpinned.word);
+          break;
+        case 'clearPinned':
+          this.clearPinned();
+          break;
+        case 'setWeirdness':
+          if (value !== undefined) this.setWeirdnessLevel(value);
+          break;
+        case 'branchWild':
+          this.setWeirdnessLevel(Math.min(1.0, this.weirdnessLevel + 0.2));
+          break;
+        case 'toggleListening':
+          // This should be handled by the UI
+          break;
+      }
+    });
+  }
+
+  // Setup footswitch action handlers
+  private setupFootswitchActions(): void {
+    this.footswitchEngine.setActionCallback((action) => {
+      switch (action) {
+        case 'pin':
+          const unpinned = Array.from(this.suggestions.values()).find(s => !s.isPinned);
+          if (unpinned) this.pinSuggestion(unpinned.word);
+          break;
+        case 'clearPinned':
+          this.clearPinned();
+          break;
+      }
+    });
   }
 
   // Start new session
@@ -485,6 +546,32 @@ export class FlowCanvasEngine {
     return this.semanticEngine.getOpenThreads();
   }
 
+  // Get analytics
+  getAnalytics(): SessionAnalytics {
+    return this.analyticsEngine.getAnalytics();
+  }
+
+  // Get highlights
+  getHighlights(): Highlight[] {
+    const history = this.callbackEngine.getHistory();
+    return this.highlightEngine.analyzeSession(history);
+  }
+
+  // Get callback history
+  getHistory() {
+    return this.callbackEngine.getHistory();
+  }
+
+  // Get MIDI engine for UI settings
+  getMIDIEngine(): MIDIEngine {
+    return this.midiEngine;
+  }
+
+  // Get audio engine for visualizer
+  getAudioEngine(): AudioEngine {
+    return this.audioEngine;
+  }
+
   // Cleanup
   cleanup(): void {
     if (this.autoSaveInterval) {
@@ -493,5 +580,6 @@ export class FlowCanvasEngine {
 
     this.speechEngine.stop();
     this.audioEngine.cleanup();
+    this.midiEngine.cleanup();
   }
 }

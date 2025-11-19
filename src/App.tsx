@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { FlowCanvasEngine, Suggestion, SessionState } from './engine/flowCanvasEngine';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { TileCanvas } from './components/TileCanvas';
 import { RhymeGraph } from './components/RhymeGraph';
 import { TranscriptView } from './components/TranscriptView';
@@ -7,6 +9,10 @@ import { ControlPanel } from './components/ControlPanel';
 import { PhaseIndicator } from './components/PhaseIndicator';
 import { WeirdSeedPanel } from './components/WeirdSeedPanel';
 import { ThreadsPanel } from './components/ThreadsPanel';
+import { AudioVisualizer } from './components/AudioVisualizer';
+import { AnalyticsDashboard } from './components/AnalyticsDashboard';
+import { TimelineVisualization } from './components/TimelineVisualization';
+import { notify } from './utils/notifications';
 import './styles/App.css';
 
 export function App() {
@@ -18,8 +24,7 @@ export function App() {
   const [currentPhase, setCurrentPhase] = useState<string>('opening');
   const [weirdnessLevel, setWeirdnessLevel] = useState(0.5);
   const [density, setDensity] = useState(0.7);
-  const [showGraph, setShowGraph] = useState(true);
-  const [showThreads, setShowThreads] = useState(false);
+  const [activeSidePanel, setActiveSidePanel] = useState<'graph' | 'threads' | 'analytics' | 'timeline'>('graph');
 
   // Initialize engine
   useEffect(() => {
@@ -37,10 +42,18 @@ export function App() {
           setTranscript(prev => [...prev, text]);
         });
 
-        console.log('FlowCanvas initialized successfully');
+        notify.success('FlowCanvas initialized successfully! 🎤');
+
+        // Check for MIDI
+        if (engine.getMIDIEngine().isAvailable()) {
+          notify.info('MIDI controller connected');
+        }
       } else {
-        console.error('Failed to initialize FlowCanvas');
+        notify.error('Failed to initialize FlowCanvas');
       }
+    }).catch(error => {
+      console.error('Initialization error:', error);
+      notify.error('Failed to initialize: ' + error.message);
     });
 
     return () => {
@@ -108,15 +121,16 @@ export function App() {
   };
 
   // Handle new session
-  const startNewSession = () => {
+  const startNewSession = async () => {
     if (!engineRef.current) return;
 
     if (confirm('Start a new session? Current session will be saved.')) {
-      engineRef.current.saveSession();
+      await engineRef.current.saveSession();
       engineRef.current.startNewSession();
       setTranscript([]);
       setSuggestions([]);
       setCurrentPhase('opening');
+      notify.success('New session started! 📝');
     }
   };
 
@@ -159,10 +173,18 @@ export function App() {
   };
 
   // Save session manually
-  const handleSaveSession = () => {
+  const handleSaveSession = async () => {
     if (!engineRef.current) return;
-    engineRef.current.saveSession();
-    alert('Session saved successfully');
+
+    const loadingToast = notify.loading('Saving session...');
+    try {
+      await engineRef.current.saveSession();
+      notify.dismiss(loadingToast);
+      notify.success('Session saved successfully! 💾');
+    } catch (error) {
+      notify.dismiss(loadingToast);
+      notify.error('Failed to save session');
+    }
   };
 
   if (!isInitialized) {
@@ -175,85 +197,106 @@ export function App() {
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <div className="header-left">
-          <h1>FlowCanvas</h1>
-          <span className="subtitle">Elite Performer Edition</span>
-        </div>
-        <div className="header-right">
-          <PhaseIndicator phase={currentPhase} />
-        </div>
-      </header>
+    <ErrorBoundary>
+      <Toaster position="top-right" />
+      <div className="app">
+        <header className="app-header">
+          <div className="header-left">
+            <h1>FlowCanvas</h1>
+            <span className="subtitle">Elite Performer Edition</span>
+          </div>
+          <div className="header-right">
+            <PhaseIndicator phase={currentPhase} />
+          </div>
+        </header>
 
-      <div className="app-content">
-        <div className="main-panel">
-          <ControlPanel
-            isListening={isListening}
-            onToggleListening={toggleListening}
-            onNewSession={startNewSession}
-            onSave={handleSaveSession}
-            onClearPinned={handleClearPinned}
-            weirdnessLevel={weirdnessLevel}
-            onWeirdnessChange={handleWeirdnessChange}
-            density={density}
-            onDensityChange={handleDensityChange}
-          />
+        <div className="app-content">
+          <div className="main-panel">
+            <ControlPanel
+              isListening={isListening}
+              onToggleListening={toggleListening}
+              onNewSession={startNewSession}
+              onSave={handleSaveSession}
+              onClearPinned={handleClearPinned}
+              weirdnessLevel={weirdnessLevel}
+              onWeirdnessChange={handleWeirdnessChange}
+              density={density}
+              onDensityChange={handleDensityChange}
+            />
 
-          <TileCanvas
-            suggestions={suggestions}
-            onPin={handlePinSuggestion}
-            onUnpin={handleUnpinSuggestion}
-          />
+            <AudioVisualizer
+              audioEngine={engineRef.current?.getAudioEngine() || null}
+              isListening={isListening}
+            />
 
-          <TranscriptView transcript={transcript} />
-        </div>
+            <TileCanvas
+              suggestions={suggestions}
+              onPin={handlePinSuggestion}
+              onUnpin={handleUnpinSuggestion}
+            />
 
-        <div className="side-panel">
-          <div className="panel-tabs">
-            <button
-              className={showGraph ? 'active' : ''}
-              onClick={() => {
-                setShowGraph(true);
-                setShowThreads(false);
-              }}
-            >
-              Rhyme Graph
-            </button>
-            <button
-              className={showThreads ? 'active' : ''}
-              onClick={() => {
-                setShowGraph(false);
-                setShowThreads(true);
-              }}
-            >
-              Story Threads
-            </button>
+            <TranscriptView transcript={transcript} />
           </div>
 
-          {showGraph && <RhymeGraph suggestions={suggestions} />}
-          {showThreads && <ThreadsPanel engine={engineRef.current} />}
+          <div className="side-panel">
+            <div className="panel-tabs">
+              <button
+                className={activeSidePanel === 'graph' ? 'active' : ''}
+                onClick={() => setActiveSidePanel('graph')}
+              >
+                Rhyme Graph
+              </button>
+              <button
+                className={activeSidePanel === 'threads' ? 'active' : ''}
+                onClick={() => setActiveSidePanel('threads')}
+              >
+                Threads
+              </button>
+              <button
+                className={activeSidePanel === 'analytics' ? 'active' : ''}
+                onClick={() => setActiveSidePanel('analytics')}
+              >
+                Analytics
+              </button>
+              <button
+                className={activeSidePanel === 'timeline' ? 'active' : ''}
+                onClick={() => setActiveSidePanel('timeline')}
+              >
+                Timeline
+              </button>
+            </div>
 
-          <WeirdSeedPanel onSeedChange={handleSeedTextChange} />
+            {activeSidePanel === 'graph' && <RhymeGraph suggestions={suggestions} />}
+            {activeSidePanel === 'threads' && <ThreadsPanel engine={engineRef.current} />}
+            {activeSidePanel === 'analytics' && <AnalyticsDashboard engine={engineRef.current} />}
+            {activeSidePanel === 'timeline' && (
+              <TimelineVisualization
+                history={engineRef.current?.getHistory() || []}
+                currentTime={Date.now()}
+              />
+            )}
+
+            <WeirdSeedPanel onSeedChange={handleSeedTextChange} />
+          </div>
         </div>
+
+        <footer className="app-footer">
+          <div className="footer-stats">
+            <span>Suggestions: {suggestions.length}</span>
+            <span>|</span>
+            <span>Pinned: {suggestions.filter(s => s.isPinned).length}</span>
+            <span>|</span>
+            <span>Transcript: {transcript.length} segments</span>
+          </div>
+          <div className="footer-shortcuts">
+            <kbd>Space</kbd> Start/Stop
+            <kbd>P</kbd> Pin
+            <kbd>C</kbd> Clear
+            <kbd>N</kbd> New Session
+          </div>
+        </footer>
       </div>
-
-      <footer className="app-footer">
-        <div className="footer-stats">
-          <span>Suggestions: {suggestions.length}</span>
-          <span>|</span>
-          <span>Pinned: {suggestions.filter(s => s.isPinned).length}</span>
-          <span>|</span>
-          <span>Transcript: {transcript.length} segments</span>
-        </div>
-        <div className="footer-shortcuts">
-          <kbd>Space</kbd> Start/Stop
-          <kbd>P</kbd> Pin
-          <kbd>C</kbd> Clear
-          <kbd>N</kbd> New Session
-        </div>
-      </footer>
-    </div>
+    </ErrorBoundary>
   );
 }
 
