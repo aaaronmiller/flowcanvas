@@ -1,0 +1,64 @@
+.audio-visualizer {
+  background: #111827;
+  border-radius: 8px;
+  padding: 1rem;
+  position: relative;
+}
+
+.visualizer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.visualizer-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.level-indicator {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.waveform-container {
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.waveform-canvas {
+  width: 100%;
+  display: block;
+  background: #0a0a0a;
+}
+
+.level-meter {
+  height: 6px;
+  background: #374151;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.level-bar {
+  height: 100%;
+  transition: width 0.1s ease, background-color 0.2s;
+  border-radius: 3px;
+}
+
+.visualizer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 10, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
